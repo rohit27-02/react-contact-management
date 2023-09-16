@@ -1,17 +1,45 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import ContactCard from './ContactCard';
 import { Link } from 'react-router-dom';
 
 function ContactList(props) {
+    const [sortBy, setSortBy] = useState(null);
+    const [sortOrder, setSortOrder] = useState('asc');
 
-    console.log(props);
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            // If already sorted by this column, toggle the order
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            // If sorting a new column, set it as the sorting column
+            setSortBy(column);
+            setSortOrder('asc'); // Default to ascending order
+        }
+    };
+
+    const sortedContacts = [...props.contacts];
+
+    if (sortBy) {
+        sortedContacts.sort((a, b) => {
+            const valueA = a[sortBy];
+            const valueB = b[sortBy];
+
+            if (sortOrder === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        });
+    }
+
+
     const inputEl = useRef("");
 
     const deletContactHandler = (id) => {
         props.getContactId(id);
     }
 
-    const renderContactList = props.contacts.map((contact) => {
+    const renderContactList = sortedContacts.map((contact) => {
         return (
             <ContactCard contact={contact} clickHandler={deletContactHandler} key={contact.id} />
         );
@@ -36,9 +64,15 @@ function ContactList(props) {
             </div>
             <div className='ui sortable padded red celled table'>
                 <thead>
-                    <tr><th className='six wide'>Name</th>
-                        <th className='six wide'>Email</th>
-                        <th className='six wide'>Phone</th>
+                    <tr><th onClick={() => handleSort('name')} className='six wide'>Name  {sortBy === 'name' && (
+                        <i className={`sort ${sortOrder === 'asc' ? 'down' : 'up'} icon`} />
+                    )}</th>
+                        <th onClick={() => handleSort('email')} className='six wide'>Email  {sortBy === 'email' && (
+                            <i className={`sort ${sortOrder === 'asc' ? 'down' : 'up'} icon`} />
+                        )}</th>
+                        <th onClick={() => handleSort('phone')} className='six wide'>Phone  {sortBy === 'phone' && (
+                            <i className={`sort ${sortOrder === 'asc' ? 'down' : 'up'} icon`} />
+                        )}</th>
                         <th className='six wide'>Edit</th>
                         <th className='six wide'>Delete</th>
                     </tr></thead>
