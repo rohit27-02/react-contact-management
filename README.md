@@ -1,5 +1,19 @@
 # About
-In this appliication user can add a contact, delete, update amd serach a contact. For storing data I have used a JSON server which is connected to the application.
+In this appliication user can add a contact, delete, update and serach a contact. For storing data I have used a JSON server which is connected to the application.
+
+# Setup
+Download node modules
+```bash
+npm i
+```
+Start Json-server
+```bash
+json-server --watch db.json --port 3007
+```
+Start React Application
+```bash
+npm start
+```
 
 Screen-shots:
 
